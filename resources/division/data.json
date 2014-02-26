@@ -1,0 +1,95 @@
+{
+	"name": "company",
+	"divisions": [
+		{
+			"name": "sales",
+			"divisions": [
+				{
+					"name": "north",
+					"divisions": [
+					]
+				},
+				{
+					"name": "east",
+					"divisions": [
+					]
+				},
+				{
+					"name": "south",
+					"divisions": [
+					]
+				},
+				{
+					"name": "west",
+					"divisions": [
+					]
+				}
+			]
+		},
+		{
+			"name": "manufacturing",
+			"divisions": [
+				{
+					"name": "packaging",
+					"divisions": [
+					]
+				},
+				{
+					"name": "cabinet",
+					"divisions": [
+					]
+				},
+				{
+					"name": "motherboard",
+					"divisions": [
+					]
+				},
+				{
+					"name": "accessories",
+					"divisions": [
+					]
+				}
+			]
+		},
+		{
+			"name": "warehouse",
+			"divisions": [
+				{
+					"name": "reception",
+					"divisions": [
+					]
+				},
+				{
+					"name": "preparation",
+					"divisions": [
+					]
+				},
+				{
+					"name": "shipping",
+					"divisions": [
+					]
+				}
+			]
+		},
+		{
+			"name": "economy",
+			"divisions": [
+				{
+					"name": "human resources",
+					"divisions": [
+					]
+				},
+				{
+					"name": "purchase",
+					"divisions": [
+					]
+				},
+				{
+					"name": "payment",
+					"divisions": [
+					]
+				}
+			]
+		}
+	]
+}

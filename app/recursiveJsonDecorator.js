@@ -1,4 +1,5 @@
 var fs 			= require('fs');
+var http		= require('http');
 var path		= require('path');
 var handlebars	= require('handlebars');
 
@@ -18,26 +19,31 @@ if (process.argv.length < 4) {
 }
 
 var jsonDir = path.resolve(path.dirname(process.argv[2])) + "/";
-var jsonFile = path.resolve(process.argv[2]);
+var jsonFile = process.argv[2].indexOf('://')==-1 ? "file://" + path.resolve(process.argv[2]) : process.argv[2];
 var templateDir = path.resolve(path.dirname(process.argv[3])) + "/";
 var templateFile = path.resolve(process.argv[3]);
 
-var model = JSON.parse(fs.readFileSync(jsonFile, "utf8"));
-
 var templates = {};
 
-fs.readFile(templateFile, function(error, templateMarkup) {
-	if (templateMarkup) {
-		handlebars.registerHelper('recursive', function(templateFile) {
-			var template = getTemplate(templateDir + templateFile);
-			return template(this);
+var getJsonFile = function(filename, callback) {
+	if (filename.indexOf('file://')==0) {
+		var json = JSON.parse(fs.readFileSync(filename.substring(7), 'utf8'));
+		callback(json);
+	} else {
+		http.get(filename, function(res) {
+			res.setEncoding('utf8');
+			var json = '';
+			res.on('data', function(chunk) {
+				json += chunk;
+			});
+			res.on('end', function() {
+				callback(JSON.parse(json));
+			});
+		}).on('error', function(e) {
+			console.log(e.message);
 		});
-
-		var pageBuilder = handlebars.compile(templateMarkup.toString());
-
-		console.log(pageBuilder(model));
 	}
-});
+}
 
 var getTemplate = function(templateFile) {
 	if (templates[templateFile] == undefined) {
@@ -47,3 +53,23 @@ var getTemplate = function(templateFile) {
 	}
 	return templates[templateFile];
 }
+
+getJsonFile(jsonFile, function(json) {
+	if (json.length !== undefined) {
+		var tmp = {objects: json};
+		json = tmp;
+	}
+	fs.readFile(templateFile, function(error, templateMarkup) {
+		if (templateMarkup) {
+			handlebars.registerHelper('recursive', function(templateFile) {
+				var template = getTemplate(templateDir + templateFile);
+				return template(this);
+			});
+
+			var pageBuilder = handlebars.compile(templateMarkup.toString());
+
+			console.log(pageBuilder(json));
+		}
+	});
+});
+
